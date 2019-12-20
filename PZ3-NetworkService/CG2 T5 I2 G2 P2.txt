@@ -1,0 +1,5 @@
+﻿CG2: Linux korisnici
+T5: Program koji prati opterećenje servera u mreži.
+I2: Ispis izveštaja o promenama u pogonu/mreži, za korisnički zadato vreme.
+G2: Prikazati promene stanja u vidu barova prema vremenu.
+P2: Filtriranje podataka prikazanih u tabeli
