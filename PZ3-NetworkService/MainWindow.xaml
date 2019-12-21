@@ -9,7 +9,7 @@
     xmlns:views="clr-namespace:PZ3_NetworkService.Views"
     Title="MainWindow"
     Width="800"
-    Height="520"
+    Height="600"
     mc:Ignorable="d">
     <Window.DataContext>
         <viewModel:MainWindowViewModel />
@@ -28,6 +28,9 @@
         <DataTemplate DataType="{x:Type viewModel:NetworViewViewModel}">
             <views:NetworkVeiw />
         </DataTemplate>
+        <DataTemplate DataType="{x:Type viewModel:ConsoleViewModel}">
+            <views:ConsoleView />
+        </DataTemplate>
     </Window.Resources>
 
     <Grid>
@@ -36,6 +39,7 @@
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
@@ -61,6 +65,9 @@
         </DockPanel>
         <Grid Grid.Row="1" Grid.ColumnSpan="2">
             <ContentControl Content="{Binding CurrentViewModel}" />
+        </Grid>
+        <Grid Grid.Row="2" Grid.ColumnSpan="2">
+            <ContentControl Content="{Binding ConsoleViewModelPoop}" />
         </Grid>
     </Grid>
 
