@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace PZ3_NetworkService.Model
 {
@@ -25,6 +26,32 @@ namespace PZ3_NetworkService.Model
             Rectangles = new ObservableCollection<MyRect>();
             NetworkManagment.CreateListener();
             LoadIps();
+        }
+
+        public static void AddServerIfNotExist(Server server)
+        {
+            if (!ServerExist(server))
+            {
+                Servers.Add(server);
+                Rectangles.Add(new MyRect(server.Name));
+                ChangeMade(server.Id, Operation.ADD);
+            }
+        }
+
+        public static void DeleteServerIfExist(Server server)
+        {
+            if (ServerExist(server))
+            {
+                int idx = Servers.IndexOf(server);
+                Servers.RemoveAt(idx);
+                Rectangles.RemoveAt(idx);
+                ChangeMade(server.Id, Operation.REMOVE);
+            }
+        }
+
+        public static bool ServerExist(Server server)
+        {
+            return Servers.Where(item => item.Id == server.Id).Any();
         }
 
         public static void LoadIps()

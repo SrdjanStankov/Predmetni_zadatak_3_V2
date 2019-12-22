@@ -154,14 +154,11 @@ namespace PZ3_NetworkService.ViewModel
 
         private void OnDelete()
         {
-            selectedServer.Validate();
-            if (CheckIfExist(selectedServer))
+            if (SelectedServer is null)
             {
-                int idx = StaticClass.Servers.IndexOf(selectedServer);
-                StaticClass.Servers.RemoveAt(idx);
-                StaticClass.Rectangles.RemoveAt(idx);
-                StaticClass.ChangeMade(selectedServer.Id, Operation.REMOVE);
+                return;
             }
+            StaticClass.DeleteServerIfExist(SelectedServer);
         }
 
         private void OnAdd()
@@ -169,25 +166,8 @@ namespace PZ3_NetworkService.ViewModel
             CurrentServer.Validate();
             if (CurrentServer.IsValid)
             {
-                if (!CheckIfExist(currentServer))
-                {
-                    StaticClass.Servers.Add(new Server(currentServer));
-                    StaticClass.Rectangles.Add(new MyRect(currentServer.Name));
-                    StaticClass.ChangeMade(currentServer.Id, Operation.ADD);
-                }
+                StaticClass.AddServerIfNotExist(new Server(CurrentServer));
             }
-        }
-
-        private bool CheckIfExist(Server currentServer)
-        {
-            foreach (var item in StaticClass.Servers)
-            {
-                if (item.Id == currentServer.Id)
-                {
-                    return true;
-                }
-            }
-            return false;
         }
 
         public Server CurrentServer

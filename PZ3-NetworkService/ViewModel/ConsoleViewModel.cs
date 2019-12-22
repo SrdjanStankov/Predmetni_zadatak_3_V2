@@ -1,8 +1,6 @@
-﻿using PZ3_NetworkService.Model;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows;
 using System.Windows.Controls;
 
 namespace PZ3_NetworkService.ViewModel
@@ -11,7 +9,7 @@ namespace PZ3_NetworkService.ViewModel
     {
         private const string DefaultTerminalString = ">>>";
         private string consoleText = DefaultTerminalString;
-        private Dictionary<string, Action> commands = new Dictionary<string, Action>();
+        private Dictionary<string, Action<List<string>>> commands = new Dictionary<string, Action<List<string>>>();
         private TextBox tb;
 
         public string ConsoleText
@@ -28,10 +26,13 @@ namespace PZ3_NetworkService.ViewModel
             commands.Add("add", AddCmd);
         }
 
-        private void AddCmd()
+        private void AddCmd(List<string> parameters)
         {
-            WriteNewCommandLine();
-
+            if (parameters.Count != 3)
+            {
+                WriteNewCommandLine();
+                return;
+            }
         }
 
         private void OnEnter(TextBox tb)
@@ -40,10 +41,18 @@ namespace PZ3_NetworkService.ViewModel
             {
                 this.tb = tb;
             }
-            string command = ConsoleText.Split(new string[] { DefaultTerminalString }, StringSplitOptions.RemoveEmptyEntries).LastOrDefault();
-            if (command != null)
+            string commandWithParameters = ConsoleText.Split(new string[] { DefaultTerminalString }, StringSplitOptions.RemoveEmptyEntries).LastOrDefault();
+            string command;
+            List<string> parameters;
+            if (commandWithParameters != null)
             {
-                command = command.ToLower();
+                string[] commandAndParameters = commandWithParameters.Split(' ');
+                parameters = commandAndParameters.Skip(1).ToList();
+                command = commandAndParameters.FirstOrDefault();
+                if (command != null)
+                {
+                    command = command.ToLower();
+                }
             }
             else
             {
@@ -56,8 +65,8 @@ namespace PZ3_NetworkService.ViewModel
                 return;
             }
 
-            var cmd = commands.Select(item=>item.Value).FirstOrDefault();
-            cmd.Invoke();
+            var cmd = commands.Select(item => item.Value).FirstOrDefault();
+            cmd.Invoke(parameters);
         }
 
         private void WriteNewCommandLine()
