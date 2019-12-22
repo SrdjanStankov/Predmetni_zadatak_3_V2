@@ -1,4 +1,6 @@
-﻿using System;
+﻿using PZ3_NetworkService.Model;
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Controls;
@@ -24,15 +26,6 @@ namespace PZ3_NetworkService.ViewModel
         {
             EnterPressedCommand = new MyICommand<TextBox>(OnEnter);
             commands.Add("add", AddCmd);
-        }
-
-        private void AddCmd(List<string> parameters)
-        {
-            if (parameters.Count != 3)
-            {
-                WriteNewCommandLine();
-                return;
-            }
         }
 
         private void OnEnter(TextBox tb)
@@ -61,7 +54,7 @@ namespace PZ3_NetworkService.ViewModel
             }
             if (!commands.ContainsKey(command))
             {
-                WriteNewCommandLine();
+                WriteNewCommandLineWithProperUsageOfFunction("Unknown command");
                 return;
             }
 
@@ -69,9 +62,105 @@ namespace PZ3_NetworkService.ViewModel
             cmd.Invoke(parameters);
         }
 
+        private void AddCmd(List<string> parameters)
+        {
+            if (parameters.Count != 3)
+            {
+                WriteNewCommandLineWithProperUsageOfFunction("Usage: add [index] [name] [ip address]");
+                return;
+            }
+
+            #region Id Check
+
+            if (!int.TryParse(parameters.First(), out int srvId))
+            {
+                WriteNewCommandLineWithProperUsageOfFunction("index must be number greater than zero");
+                return;
+            }
+
+            if (srvId < 1)
+            {
+                WriteNewCommandLineWithProperUsageOfFunction("index must be number greater than zero");
+                return;
+            }
+
+            #endregion
+
+            #region Name Check
+
+            if (string.IsNullOrEmpty(parameters[1]) || string.IsNullOrWhiteSpace(parameters[1]))
+            {
+                WriteNewCommandLineWithProperUsageOfFunction("Name must be valid string");
+                return;
+            }
+
+            #endregion
+
+            #region Ip address check
+
+            string[] ipSplitted = parameters[2].Split('.');
+            if (ipSplitted.Length != 4)
+            {
+                WriteNewCommandLineWithProperUsageOfFunction("Ip address format: 192.168.0.1");
+                return;
+            }
+
+            foreach (string item in ipSplitted)
+            {
+                if (!int.TryParse(item, out int result))
+                {
+                    WriteNewCommandLineWithProperUsageOfFunction("Ip address format: 192.168.0.1");
+                    return;
+                }
+                if (result < 0 || result > 255)
+                {
+                    WriteNewCommandLineWithProperUsageOfFunction("Ip address must be between 0 and 255, inclusive");
+                    return;
+                }
+            }
+
+            #endregion
+
+            var srv = new Server() { Id = srvId, Name = parameters[1], IpAddress = parameters[2], ImgSrc = $"{Environment.CurrentDirectory}\\server_PNG20.png" };
+            srv.Validate();
+            if (srv.IsValid)
+            {
+                StaticClass.AddServerIfNotExist(srv);
+                WriteNewCommandLineWithProperUsageOfFunction("Server added");
+                return;
+            }
+
+            #region Write validation errors
+
+            string a = srv.ValidationErrors[nameof(srv.Id)];
+            if (a != "")
+            {
+                WriteNewCommandLineWithProperUsageOfFunction(a);
+            }
+            string b = srv.ValidationErrors[nameof(srv.Name)];
+            if (b != "")
+            {
+                WriteNewCommandLineWithProperUsageOfFunction(b);
+            }
+            string c = srv.ValidationErrors[nameof(srv.IpAddress)];
+            if (c != "")
+            {
+                WriteNewCommandLineWithProperUsageOfFunction(c);
+            }
+
+            #endregion
+        }
+
         private void WriteNewCommandLine()
         {
             ConsoleText += $"{Environment.NewLine}{DefaultTerminalString}";
+            tb.CaretIndex = ConsoleText.Length;
+        }
+
+        private void WriteNewCommandLineWithProperUsageOfFunction(string usage)
+        {
+            ConsoleText += $"{Environment.NewLine}{usage}";
+            WriteNewCommandLine();
             tb.CaretIndex = ConsoleText.Length;
         }
     }

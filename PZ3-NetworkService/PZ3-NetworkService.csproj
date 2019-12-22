@@ -175,4 +175,7 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+   <LangVersion>latest</LangVersion>
+  </PropertyGroup>
 </Project>
