@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
@@ -38,7 +39,7 @@ namespace PZ3_NetworkService.Model
             }
         }
 
-        public static void DeleteServerIfExist(Server server)
+        public static bool DeleteServerIfExist(Server server)
         {
             if (ServerExist(server))
             {
@@ -46,7 +47,35 @@ namespace PZ3_NetworkService.Model
                 Servers.RemoveAt(idx);
                 Rectangles.RemoveAt(idx);
                 ChangeMade(server.Id, Operation.REMOVE);
+                return true;
             }
+            return false;
+        }
+
+        public static bool DeleteServerIfExist(int id)
+        {
+            var serv = Servers.Where(srv => srv.Id == id);
+            if (serv.Any())
+            {
+                return DeleteServerIfExist(serv.FirstOrDefault());
+            }
+            return false;
+        }
+
+        public static ObservableCollection<Server> FilterServers(string IpAddress = "nan", string idMode = "nan")
+        {
+            var retVal = new ObservableCollection<Server>();
+
+            if (IpAddress == "nan" && idMode == "nan")
+            {
+                retVal = Servers;
+                return retVal;
+            }
+
+
+
+
+            return retVal;
         }
 
         public static bool ServerExist(Server server)

@@ -26,6 +26,10 @@ namespace PZ3_NetworkService.ViewModel
         {
             EnterPressedCommand = new MyICommand<TextBox>(OnEnter);
             commands.Add("add", AddCmd);
+            commands.Add("remove", RemoveCmd);
+            commands.Add("delete", RemoveCmd);
+            commands.Add("del", RemoveCmd);
+            commands.Add("rem", RemoveCmd);
         }
 
         private void OnEnter(TextBox tb)
@@ -58,7 +62,7 @@ namespace PZ3_NetworkService.ViewModel
                 return;
             }
 
-            var cmd = commands.Select(item => item.Value).FirstOrDefault();
+            var cmd = commands.Where(item=> item.Key == command).Select(item => item.Value).FirstOrDefault();
             cmd.Invoke(parameters);
         }
 
@@ -66,7 +70,7 @@ namespace PZ3_NetworkService.ViewModel
         {
             if (parameters.Count != 3)
             {
-                WriteNewCommandLineWithProperUsageOfFunction("Usage: add [index] [name] [ip address]");
+                WriteNewCommandLineWithProperUsageOfFunction("Usage: add [id] [name] [ip address]");
                 return;
             }
 
@@ -149,6 +153,38 @@ namespace PZ3_NetworkService.ViewModel
             }
 
             #endregion
+        }
+
+        private void RemoveCmd(List<string> parameters)
+        {
+            if (parameters.Count != 1)
+            {
+                WriteNewCommandLineWithProperUsageOfFunction("Usage: remove [id]");
+                return;
+            }
+
+            #region Id Check
+
+            if (!int.TryParse(parameters.First(), out int srvId))
+            {
+                WriteNewCommandLineWithProperUsageOfFunction("index must be number greater than zero");
+                return;
+            }
+
+            if (srvId < 1)
+            {
+                WriteNewCommandLineWithProperUsageOfFunction("index must be number greater than zero");
+                return;
+            }
+
+            #endregion
+
+            if (StaticClass.DeleteServerIfExist(srvId))
+            {
+                WriteNewCommandLineWithProperUsageOfFunction("Server removed");
+                return;
+            }
+            WriteNewCommandLineWithProperUsageOfFunction("Server does not exist");
         }
 
         private void WriteNewCommandLine()
