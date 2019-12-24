@@ -18,6 +18,7 @@ namespace PZ3_NetworkService.Model
         private const int IpAddressNum = 9;
 
         public static ObservableCollection<Server> Servers { get; set; }
+        public static ObservableCollection<Server> FilteredServers { get; set; }
         public static ObservableCollection<MyRect> Rectangles { get; set; }
         public static ObservableCollection<string> IpAddresses { get; set; }
 
@@ -25,6 +26,7 @@ namespace PZ3_NetworkService.Model
         {
             Servers = new ObservableCollection<Server>();
             Rectangles = new ObservableCollection<MyRect>();
+            FilteredServers = new ObservableCollection<Server>(Servers);
             NetworkManagment.CreateListener();
             LoadIps();
         }
@@ -62,20 +64,42 @@ namespace PZ3_NetworkService.Model
             return false;
         }
 
-        public static ObservableCollection<Server> FilterServers(string IpAddress = "nan", string idMode = "nan")
+        public static void FilterServers(string IpAddress = "nan", string idMode = "nan", int id = 0)
         {
-            var retVal = new ObservableCollection<Server>();
-
+            FilteredServers.Clear();
             if (IpAddress == "nan" && idMode == "nan")
             {
-                retVal = Servers;
-                return retVal;
+                Servers.ToList().ForEach(item => FilteredServers.Add(item));
+                return;
             }
 
+            if (idMode == "nan")
+            {
+                Servers.Where(item => item.IpAddress == IpAddress).ToList().ForEach(item => FilteredServers.Add(item));
+                return;
+            }
 
+            if (IpAddress == "nan")
+            {
+                if (idMode == "lt")
+                {
+                    Servers.Where(item => item.Id < id).ToList().ForEach(item => FilteredServers.Add(item));
+                }
+                else if (idMode == "gt")
+                {
+                    Servers.Where(item => item.Id > id).ToList().ForEach(item => FilteredServers.Add(item));
+                }
+                return;
+            }
 
-
-            return retVal;
+            if (idMode == "lt")
+            {
+                Servers.Where(item => item.Id < id && item.IpAddress == IpAddress).ToList().ForEach(item => FilteredServers.Add(item));
+            }
+            else if (idMode == "gt")
+            {
+                Servers.Where(item => item.Id > id && item.IpAddress == IpAddress).ToList().ForEach(item => FilteredServers.Add(item));
+            }
         }
 
         public static bool ServerExist(Server server)

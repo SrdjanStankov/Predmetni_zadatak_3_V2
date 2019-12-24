@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.ObjectModel;
+using System.Windows;
 
 namespace PZ3_NetworkService.ViewModel
 {
@@ -48,8 +49,14 @@ namespace PZ3_NetworkService.ViewModel
                 ImgSrc = ImgSrc
             };
             FindServerCommand = new MyICommand(OnFilter);
+            StaticClass.FilteredServers.CollectionChanged += FilteredServersChanged;
 
             AddStartingValues();
+        }
+
+        private void FilteredServersChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            ServersToShow = StaticClass.FilteredServers;
         }
 
         private void AddStartingValues()
@@ -69,72 +76,11 @@ namespace PZ3_NetworkService.ViewModel
 
         private void OnFilter()
         {
-            var finded = new ObservableCollection<Server>();
+            string ipAddress = FilterServer.IpAddress.ToLower();
+            string idMode = NaN ? "nan" : Lt ? "lt" : Gt ? "gt" : "";
+            int id = FilterServer.Id;
 
-            if (filterServer.IpAddress == "NaN" && NaN)
-            {
-                ServersToShow = finded;
-                return;
-            }
-
-            if (NaN)
-            {
-                foreach (var item in StaticClass.Servers)
-                {
-                    if (item.IpAddress == filterServer.IpAddress)
-                    {
-                        finded.Add(item);
-                    }
-                }
-                ServersToShow = finded;
-                return;
-            }
-
-            if (filterServer.IpAddress == "NaN")
-            {
-                foreach (var item in StaticClass.Servers)
-                {
-                    if (Lt)
-                    {
-                        if (item.Id < FilterServer.Id)
-                        {
-                            finded.Add(item);
-                        }
-                    }
-                    else if (Gt)
-                    {
-                        if (item.Id > FilterServer.Id)
-                        {
-                            finded.Add(item);
-                        }
-                    }
-                }
-                ServersToShow = finded;
-                return;
-            }
-
-            foreach (var item in StaticClass.Servers)
-            {
-                if (item.IpAddress == FilterServer.IpAddress)
-                {
-                    if (Lt)
-                    {
-                        if (item.Id < FilterServer.Id)
-                        {
-                            finded.Add(item);
-                        }
-                    }
-                    else if (Gt)
-                    {
-                        if (item.Id > FilterServer.Id)
-                        {
-                            finded.Add(item);
-                        }
-                    }
-                }
-            }
-
-            ServersToShow = finded;
+            StaticClass.FilterServers(ipAddress, idMode, id);
         }
 
         public ObservableCollection<string> IpAddresses => new ObservableCollection<string>(StaticClass.IpAddresses)

@@ -30,6 +30,7 @@ namespace PZ3_NetworkService.ViewModel
             commands.Add("delete", RemoveCmd);
             commands.Add("del", RemoveCmd);
             commands.Add("rem", RemoveCmd);
+            commands.Add("filter", FilterCmd);
         }
 
         private void OnEnter(TextBox tb)
@@ -70,7 +71,7 @@ namespace PZ3_NetworkService.ViewModel
         {
             if (parameters.Count != 3)
             {
-                WriteNewCommandLineWithProperUsageOfFunction("Usage: add [id] [name] [ip address]");
+                WriteNewCommandLineWithProperUsageOfFunction("Usage: add id name ip address");
                 return;
             }
 
@@ -159,7 +160,7 @@ namespace PZ3_NetworkService.ViewModel
         {
             if (parameters.Count != 1)
             {
-                WriteNewCommandLineWithProperUsageOfFunction("Usage: remove [id]");
+                WriteNewCommandLineWithProperUsageOfFunction("Usage: remove id");
                 return;
             }
 
@@ -185,6 +186,90 @@ namespace PZ3_NetworkService.ViewModel
                 return;
             }
             WriteNewCommandLineWithProperUsageOfFunction("Server does not exist");
+        }
+
+        private void FilterCmd(List<string> parameters)
+        {
+            if (parameters.Count != 3)
+            {
+                WriteNewCommandLineWithProperUsageOfFunction("Usage: filter ipAddress/nan lt/gt/nan id");
+                return;
+            }
+
+            string ipAddress;
+            string idMode;
+            int id;
+
+            #region Ip address / nan validation
+
+            if (parameters[0] != "nan")
+            {
+                string[] ipSplitted = parameters[0].Split('.');
+                if (ipSplitted.Length != 4)
+                {
+                    WriteNewCommandLineWithProperUsageOfFunction("Ip address format: 192.168.0.1");
+                    return;
+                }
+
+                foreach (string item in ipSplitted)
+                {
+                    if (!int.TryParse(item, out int result))
+                    {
+                        WriteNewCommandLineWithProperUsageOfFunction("Ip address format: 192.168.0.1");
+                        return;
+                    }
+                    if (result < 0 || result > 255)
+                    {
+                        WriteNewCommandLineWithProperUsageOfFunction("Ip address must be between 0 and 255, inclusive");
+                        return;
+                    }
+                }
+
+                ipAddress = parameters[0];
+            }
+            else
+            {
+                ipAddress = "nan";
+            }
+
+            #endregion
+
+            #region Id mode validation
+
+            switch (parameters[1].ToLower())
+            {
+                case "lt":
+                case "gt":
+                case "nan":
+                    idMode = parameters[1].ToLower();
+                    break;
+                default:
+                    WriteNewCommandLineWithProperUsageOfFunction("Invalid second parameter. Available vaues are: lt, gt or nan");
+                    return;
+            }
+
+            #endregion
+
+            #region Id validation
+
+            if (!int.TryParse(parameters[2], out int srvId))
+            {
+                WriteNewCommandLineWithProperUsageOfFunction("index must be number greater than zero");
+                return;
+            }
+
+            if (srvId < 1)
+            {
+                WriteNewCommandLineWithProperUsageOfFunction("index must be number greater than zero");
+                return;
+            }
+
+            id = srvId;
+
+            #endregion
+
+            StaticClass.FilterServers(ipAddress, idMode, id);
+            WriteNewCommandLine();
         }
 
         private void WriteNewCommandLine()
