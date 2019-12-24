@@ -7,9 +7,9 @@
  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
  xmlns:viewModel="clr-namespace:PZ3_NetworkService.ViewModel"
  xmlns:views="clr-namespace:PZ3_NetworkService.Views"
- Title="MainWindow"
+ Title="Network Service"
  Width="800"
- Height="600"
+ Height="650"
  mc:Ignorable="d">
     <Window.DataContext>
         <viewModel:MainWindowViewModel />
@@ -40,23 +40,23 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <DockPanel Grid.Row="0">
-            <Menu DockPanel.Dock="Top">
+            <Menu DockPanel.Dock="Top" Style="{DynamicResource MaterialDesignMenu}">
                 <MenuItem
                  Command="{Binding NetworkDataCommand}"
-                 FontSize="16"
-                 Header="Mrezni podaci" />
+                 Header="Mrezni podaci"
+                 Style="{DynamicResource MaterialDesignMenuItem}" />
                 <MenuItem
                  Command="{Binding ReportCommand}"
-                 FontSize="16"
-                 Header="Izvestaj" />
+                 Header="Izvestaj"
+                 Style="{DynamicResource MaterialDesignMenuItem}" />
                 <MenuItem
                  Command="{Binding DataChartCommand}"
-                 FontSize="16"
-                 Header="Grafik" />
+                 Header="Grafik"
+                 Style="{DynamicResource MaterialDesignMenuItem}" />
                 <MenuItem
                  Command="{Binding NetworkViewCommand}"
-                 FontSize="16"
-                 Header="Pregled mreze" />
+                 Header="Pregled mreze"
+                 Style="{DynamicResource MaterialDesignMenuItem}" />
             </Menu>
         </DockPanel>
         <StackPanel Grid.Row="1">

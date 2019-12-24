@@ -25,9 +25,7 @@
              Panel.ZIndex="10"
              Command="{Binding ShowButtonCommand}"
              Content="{Binding ShowButtonText}"
-             DockPanel.Dock="Top"
-             FontSize="16"
-             ToolTip="Prikazuje / Sakriva grafik" />
+             DockPanel.Dock="Top" />
         </DockPanel>
         <Grid
          Name="chart1"
@@ -84,8 +82,7 @@
                                     <Label
                                      Width="auto"
                                      Margin="3"
-                                     Content="{Binding NameRect}"
-                                     FontSize="16" />
+                                     Content="{Binding NameRect}" />
                                 </Grid>
                             </Grid>
                         </DataTemplate>

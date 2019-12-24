@@ -113,7 +113,7 @@
                 ValidationErrors["ImgSrc"] = "Slika nedostaje.";
             }
 
-            if (string.IsNullOrWhiteSpace(ipAddress))
+            if (string.IsNullOrWhiteSpace(ipAddress) || ipAddress.ToLower() == "nan")
             {
                 ValidationErrors["IpAddress"] = "IP addresa nedostaje";
             }

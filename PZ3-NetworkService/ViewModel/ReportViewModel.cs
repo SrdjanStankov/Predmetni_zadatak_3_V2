@@ -117,7 +117,7 @@ namespace PZ3_NetworkService.ViewModel
                     while (!sr.EndOfStream)
                     {
                         string temp = sr.ReadLine();
-                        string[] vals = temp.Split(',', ':');
+                        string[] vals = temp.Split(',');
                         var date = Convert.ToDateTime(vals[0]);
                         if (date >= startDate && date <= endDate)
                         {

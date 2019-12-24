@@ -65,7 +65,7 @@ namespace PZ3_NetworkService
 
                                     using (var sw = new StreamWriter("Log.txt", true))
                                     {
-                                        sw.WriteLine(DateTime.Now.ToShortDateString() + ", " + DateTime.Now.ToShortTimeString() + ": " + StaticClass.Servers[id].Name + ", " + value);
+                                        sw.WriteLine(DateTime.Now.ToShortDateString() + ", " + DateTime.Now.ToShortTimeString() + ", " + StaticClass.Servers[id].Name + ", " + value);
                                     }
                                 }
                             }
