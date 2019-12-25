@@ -15,6 +15,13 @@
         <viewModel:MainWindowViewModel />
     </Window.DataContext>
 
+    <Window.InputBindings>
+        <KeyBinding Key="F1" Command="{Binding NetworkDataCommand}" />
+        <KeyBinding Key="F2" Command="{Binding ReportCommand}" />
+        <KeyBinding Key="F3" Command="{Binding DataChartCommand}" />
+        <KeyBinding Key="F4" Command="{Binding NetworkViewCommand}" />
+    </Window.InputBindings>
+
     <Window.Resources>
         <DataTemplate DataType="{x:Type viewModel:NetworkDataViewModel}">
             <views:NetworkDataView />
