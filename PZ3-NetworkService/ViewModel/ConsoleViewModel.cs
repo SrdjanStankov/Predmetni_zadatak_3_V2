@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Windows.Controls;
 using PZ3_NetworkService.Model;
@@ -30,6 +31,7 @@ namespace PZ3_NetworkService.ViewModel
             commands.Add("del", RemoveCmd);
             commands.Add("rem", RemoveCmd);
             commands.Add("filter", FilterCmd);
+            commands.Add("report", ReportCmd);
         }
 
         private void OnEnter(TextBox tb)
@@ -58,7 +60,7 @@ namespace PZ3_NetworkService.ViewModel
             }
             if (!commands.ContainsKey(command))
             {
-                WriteNewCommandLineWithProperUsageOfFunction("Unknown command");
+                WriteNewCommandLineWithMessage("Unknown command");
                 return;
             }
 
@@ -70,7 +72,7 @@ namespace PZ3_NetworkService.ViewModel
         {
             if (parameters.Count != 3)
             {
-                WriteNewCommandLineWithProperUsageOfFunction("Usage: add id name ip address");
+                WriteNewCommandLineWithMessage("Usage: add id name ip address");
                 return;
             }
 
@@ -78,13 +80,13 @@ namespace PZ3_NetworkService.ViewModel
 
             if (!int.TryParse(parameters.First(), out int srvId))
             {
-                WriteNewCommandLineWithProperUsageOfFunction("index must be number greater than zero");
+                WriteNewCommandLineWithMessage("index must be number greater than zero");
                 return;
             }
 
             if (srvId < 1)
             {
-                WriteNewCommandLineWithProperUsageOfFunction("index must be number greater than zero");
+                WriteNewCommandLineWithMessage("index must be number greater than zero");
                 return;
             }
 
@@ -94,7 +96,7 @@ namespace PZ3_NetworkService.ViewModel
 
             if (string.IsNullOrEmpty(parameters[1]) || string.IsNullOrWhiteSpace(parameters[1]))
             {
-                WriteNewCommandLineWithProperUsageOfFunction("Name must be valid string");
+                WriteNewCommandLineWithMessage("Name must be valid string");
                 return;
             }
 
@@ -105,7 +107,7 @@ namespace PZ3_NetworkService.ViewModel
             string[] ipSplitted = parameters[2].Split('.');
             if (ipSplitted.Length != 4)
             {
-                WriteNewCommandLineWithProperUsageOfFunction("Ip address format: 192.168.0.1");
+                WriteNewCommandLineWithMessage("Ip address format: 192.168.0.1");
                 return;
             }
 
@@ -113,12 +115,12 @@ namespace PZ3_NetworkService.ViewModel
             {
                 if (!int.TryParse(item, out int result))
                 {
-                    WriteNewCommandLineWithProperUsageOfFunction("Ip address format: 192.168.0.1");
+                    WriteNewCommandLineWithMessage("Ip address format: 192.168.0.1");
                     return;
                 }
                 if (result < 0 || result > 255)
                 {
-                    WriteNewCommandLineWithProperUsageOfFunction("Ip address must be between 0 and 255, inclusive");
+                    WriteNewCommandLineWithMessage("Ip address must be between 0 and 255, inclusive");
                     return;
                 }
             }
@@ -130,7 +132,7 @@ namespace PZ3_NetworkService.ViewModel
             if (srv.IsValid)
             {
                 StaticClass.AddServerIfNotExist(srv);
-                WriteNewCommandLineWithProperUsageOfFunction("Server added");
+                WriteNewCommandLineWithMessage("Server added");
                 return;
             }
 
@@ -139,17 +141,17 @@ namespace PZ3_NetworkService.ViewModel
             string a = srv.ValidationErrors[nameof(srv.Id)];
             if (a != "")
             {
-                WriteNewCommandLineWithProperUsageOfFunction(a);
+                WriteNewCommandLineWithMessage(a);
             }
             string b = srv.ValidationErrors[nameof(srv.Name)];
             if (b != "")
             {
-                WriteNewCommandLineWithProperUsageOfFunction(b);
+                WriteNewCommandLineWithMessage(b);
             }
             string c = srv.ValidationErrors[nameof(srv.IpAddress)];
             if (c != "")
             {
-                WriteNewCommandLineWithProperUsageOfFunction(c);
+                WriteNewCommandLineWithMessage(c);
             }
 
             #endregion
@@ -159,7 +161,7 @@ namespace PZ3_NetworkService.ViewModel
         {
             if (parameters.Count != 1)
             {
-                WriteNewCommandLineWithProperUsageOfFunction("Usage: remove id");
+                WriteNewCommandLineWithMessage("Usage: remove id");
                 return;
             }
 
@@ -167,13 +169,13 @@ namespace PZ3_NetworkService.ViewModel
 
             if (!int.TryParse(parameters.First(), out int srvId))
             {
-                WriteNewCommandLineWithProperUsageOfFunction("index must be number greater than zero");
+                WriteNewCommandLineWithMessage("index must be number greater than zero");
                 return;
             }
 
             if (srvId < 1)
             {
-                WriteNewCommandLineWithProperUsageOfFunction("index must be number greater than zero");
+                WriteNewCommandLineWithMessage("index must be number greater than zero");
                 return;
             }
 
@@ -181,17 +183,17 @@ namespace PZ3_NetworkService.ViewModel
 
             if (StaticClass.DeleteServerIfExist(srvId))
             {
-                WriteNewCommandLineWithProperUsageOfFunction("Server removed");
+                WriteNewCommandLineWithMessage("Server removed");
                 return;
             }
-            WriteNewCommandLineWithProperUsageOfFunction("Server does not exist");
+            WriteNewCommandLineWithMessage("Server does not exist");
         }
 
         private void FilterCmd(List<string> parameters)
         {
             if (parameters.Count != 3)
             {
-                WriteNewCommandLineWithProperUsageOfFunction("Usage: filter ipAddress/nan lt/gt/nan id");
+                WriteNewCommandLineWithMessage("Usage: filter ipAddress/nan lt/gt/nan id");
                 return;
             }
 
@@ -206,7 +208,7 @@ namespace PZ3_NetworkService.ViewModel
                 string[] ipSplitted = parameters[0].Split('.');
                 if (ipSplitted.Length != 4)
                 {
-                    WriteNewCommandLineWithProperUsageOfFunction("Ip address format: 192.168.0.1");
+                    WriteNewCommandLineWithMessage("Ip address format: 192.168.0.1");
                     return;
                 }
 
@@ -214,12 +216,12 @@ namespace PZ3_NetworkService.ViewModel
                 {
                     if (!int.TryParse(item, out int result))
                     {
-                        WriteNewCommandLineWithProperUsageOfFunction("Ip address format: 192.168.0.1");
+                        WriteNewCommandLineWithMessage("Ip address format: 192.168.0.1");
                         return;
                     }
                     if (result < 0 || result > 255)
                     {
-                        WriteNewCommandLineWithProperUsageOfFunction("Ip address must be between 0 and 255, inclusive");
+                        WriteNewCommandLineWithMessage("Ip address must be between 0 and 255, inclusive");
                         return;
                     }
                 }
@@ -243,7 +245,7 @@ namespace PZ3_NetworkService.ViewModel
                     idMode = parameters[1].ToLower();
                     break;
                 default:
-                    WriteNewCommandLineWithProperUsageOfFunction("Invalid second parameter. Available vaues are: lt, gt or nan");
+                    WriteNewCommandLineWithMessage("Invalid second parameter. Available vaues are: lt, gt or nan");
                     return;
             }
 
@@ -253,13 +255,13 @@ namespace PZ3_NetworkService.ViewModel
 
             if (!int.TryParse(parameters[2], out int srvId))
             {
-                WriteNewCommandLineWithProperUsageOfFunction("index must be number greater than zero");
+                WriteNewCommandLineWithMessage("index must be number greater than zero");
                 return;
             }
 
             if (srvId < 1)
             {
-                WriteNewCommandLineWithProperUsageOfFunction("index must be number greater than zero");
+                WriteNewCommandLineWithMessage("index must be number greater than zero");
                 return;
             }
 
@@ -271,15 +273,46 @@ namespace PZ3_NetworkService.ViewModel
             WriteNewCommandLine();
         }
 
+        private void ReportCmd(List<string> parameters)
+        {
+            var reports = new SortedDictionary<string, string>();
+            using (var sr = new StreamReader("Log.txt"))
+            {
+                while (!sr.EndOfStream)
+                {
+                    string temp = sr.ReadLine();
+                    string[] vals = temp.Split(',');
+                    string message = "\t" + vals[0] + " " + vals[1] + ", CHANGED STATE: " + vals[3] + Environment.NewLine;
+                    if (!reports.ContainsKey(vals[2]))
+                    {
+                        reports.Add(vals[2], message);
+                    }
+                    else
+                    {
+                        reports[vals[2]] += message;
+                    }
+                }
+            }
+
+            string reportShow = "REPORT:" + Environment.NewLine;
+            foreach (var item in reports)
+            {
+                reportShow += item.Key + ":" + Environment.NewLine + item.Value;
+            }
+
+            ReportViewModel.OnReport(reportShow);
+            WriteNewCommandLineWithMessage("Report created");
+        }
+
         private void WriteNewCommandLine()
         {
             ConsoleText += $"{Environment.NewLine}{DefaultTerminalString}";
             tb.CaretIndex = ConsoleText.Length;
         }
 
-        private void WriteNewCommandLineWithProperUsageOfFunction(string usage)
+        private void WriteNewCommandLineWithMessage(string message)
         {
-            ConsoleText += $"{Environment.NewLine}{usage}";
+            ConsoleText += $"{Environment.NewLine}{message}";
             WriteNewCommandLine();
             tb.CaretIndex = ConsoleText.Length;
         }

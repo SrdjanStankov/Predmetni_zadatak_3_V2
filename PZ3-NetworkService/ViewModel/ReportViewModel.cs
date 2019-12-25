@@ -8,6 +8,8 @@ namespace PZ3_NetworkService.ViewModel
     public class ReportViewModel : BindableBase
     {
         private string _errorMessage = "";
+        public delegate void reportDel(string report);
+        public static event reportDel Report = delegate { };
 
         public MyICommand ShowReportCommand { get; set; }
         public string ReportShow { get; set; }
@@ -25,6 +27,18 @@ namespace PZ3_NetworkService.ViewModel
         public ReportViewModel()
         {
             ShowReportCommand = new MyICommand(ShowReport);
+            Report += ReportToShow;
+        }
+
+        public static void OnReport(string report)
+        {
+            Report?.Invoke(report);
+        }
+
+        private void ReportToShow(string report)
+        {
+            ReportShow = report;
+            OnPropertyChanged(nameof(ReportShow));
         }
 
         private void ShowReport()
