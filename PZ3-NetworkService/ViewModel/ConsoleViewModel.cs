@@ -1,9 +1,8 @@
-﻿using PZ3_NetworkService.Model;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Controls;
+using PZ3_NetworkService.Model;
 
 namespace PZ3_NetworkService.ViewModel
 {
@@ -63,7 +62,7 @@ namespace PZ3_NetworkService.ViewModel
                 return;
             }
 
-            var cmd = commands.Where(item=> item.Key == command).Select(item => item.Value).FirstOrDefault();
+            var cmd = commands.Where(item => item.Key == command).Select(item => item.Value).FirstOrDefault();
             cmd.Invoke(parameters);
         }
 

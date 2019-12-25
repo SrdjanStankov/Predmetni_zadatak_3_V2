@@ -1,11 +1,10 @@
-﻿using PZ3_NetworkService.Model;
-
-using System;
+﻿using System;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using PZ3_NetworkService.Model;
 
 namespace PZ3_NetworkService
 {

@@ -1,7 +1,6 @@
-﻿using PZ3_NetworkService.Model;
-
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Windows;
+using PZ3_NetworkService.Model;
 
 namespace PZ3_NetworkService.ViewModel
 {
