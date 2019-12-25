@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Windows.Controls;
 using PZ3_NetworkService.Model;
 
@@ -25,6 +26,8 @@ namespace PZ3_NetworkService.ViewModel
         public ConsoleViewModel()
         {
             EnterPressedCommand = new MyICommand<TextBox>(OnEnter);
+            commands.Add("help", HelpCmd);
+            commands.Add("?", HelpCmd);
             commands.Add("add", AddCmd);
             commands.Add("remove", RemoveCmd);
             commands.Add("delete", RemoveCmd);
@@ -33,6 +36,8 @@ namespace PZ3_NetworkService.ViewModel
             commands.Add("filter", FilterCmd);
             commands.Add("report", ReportCmd);
             commands.Add("graph", ShowGraphCmd);
+            commands.Add("exit", ExitCmd);
+            commands.Add("quit", ExitCmd);
         }
 
         private void OnEnter(TextBox tb)
@@ -309,6 +314,18 @@ namespace PZ3_NetworkService.ViewModel
         {
             DataChartViewModel.OnShowBtn();
             WriteNewCommandLineWithMessage("Graph showed / hidden");
+        }
+
+        private void HelpCmd(List<string> parameters)
+        {
+            var cmds = new StringBuilder();
+            commands.Select(item => item.Key).ToList().ForEach(item => cmds.Append($"{item}   "));
+            WriteNewCommandLineWithMessage(cmds.ToString());
+        }
+
+        private void ExitCmd(List<string> parameters)
+        {
+            Environment.Exit(0);
         }
 
         private void WriteNewCommandLine()
