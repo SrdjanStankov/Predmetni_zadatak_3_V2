@@ -32,6 +32,7 @@ namespace PZ3_NetworkService.ViewModel
             commands.Add("rem", RemoveCmd);
             commands.Add("filter", FilterCmd);
             commands.Add("report", ReportCmd);
+            commands.Add("graph", ShowGraphCmd);
         }
 
         private void OnEnter(TextBox tb)
@@ -302,6 +303,12 @@ namespace PZ3_NetworkService.ViewModel
 
             ReportViewModel.OnReport(reportShow);
             WriteNewCommandLineWithMessage("Report created");
+        }
+
+        private void ShowGraphCmd(List<string> parameters)
+        {
+            DataChartViewModel.OnShowBtn();
+            WriteNewCommandLineWithMessage("Graph showed / hidden");
         }
 
         private void WriteNewCommandLine()

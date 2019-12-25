@@ -6,6 +6,9 @@ namespace PZ3_NetworkService.ViewModel
 {
     public class DataChartViewModel : BindableBase
     {
+        public delegate void showDel();
+        public static event showDel ShowBtn = delegate { };
+
         public MyICommand ShowButtonCommand { get; set; }
         public ObservableCollection<MyRect> Rectangles { get; set; }
         public Visibility Vis { get; set; } = Visibility.Visible;
@@ -15,6 +18,7 @@ namespace PZ3_NetworkService.ViewModel
         {
             ShowButtonCommand = new MyICommand(OnShow);
             Rectangles = StaticClass.Rectangles;
+            ShowBtn += OnShow;
         }
 
         public void OnShow()
@@ -23,6 +27,11 @@ namespace PZ3_NetworkService.ViewModel
             OnPropertyChanged("ShowButtonText");
             Vis = (Vis == Visibility.Visible) ? Visibility.Collapsed : Visibility.Visible;
             OnPropertyChanged("Vis");
+        }
+
+        public static void OnShowBtn()
+        {
+            ShowBtn?.Invoke();
         }
     }
 }
