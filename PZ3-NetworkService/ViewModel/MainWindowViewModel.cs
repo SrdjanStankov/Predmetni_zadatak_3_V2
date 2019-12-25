@@ -1,4 +1,6 @@
-﻿namespace PZ3_NetworkService.ViewModel
+﻿using PZ3_NetworkService.Model;
+
+namespace PZ3_NetworkService.ViewModel
 {
     public class MainWindowViewModel : BindableBase
     {
@@ -6,6 +8,7 @@
         public MyICommand NetworkDataCommand { get; set; }
         public MyICommand DataChartCommand { get; set; }
         public MyICommand NetworkViewCommand { get; set; }
+        public MyICommand UndoCommand { get; set; }
 
         private BindableBase currentViewModel;
         private BindableBase consoleViewModelProp;
@@ -39,6 +42,12 @@
             NetworkDataCommand = new MyICommand(OnNetworkData);
             DataChartCommand = new MyICommand(OnDataChart);
             NetworkViewCommand = new MyICommand(OnNetworkView);
+            UndoCommand = new MyICommand(Undo);
+        }
+
+        private void Undo()
+        {
+            StaticClass.Undo();
         }
 
         private void OnNetworkView()

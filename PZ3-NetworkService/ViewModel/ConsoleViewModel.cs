@@ -38,6 +38,7 @@ namespace PZ3_NetworkService.ViewModel
             commands.Add("graph", ShowGraphCmd);
             commands.Add("exit", ExitCmd);
             commands.Add("quit", ExitCmd);
+            commands.Add("undo", UndoCmd);
         }
 
         private void OnEnter(TextBox tb)
@@ -326,6 +327,12 @@ namespace PZ3_NetworkService.ViewModel
         private void ExitCmd(List<string> parameters)
         {
             Environment.Exit(0);
+        }
+
+        private void UndoCmd(List<string> parameters)
+        {
+            StaticClass.Undo();
+            WriteNewCommandLine();
         }
 
         private void WriteNewCommandLine()

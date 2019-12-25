@@ -21,6 +21,9 @@ namespace PZ3_NetworkService.Model
         public static ObservableCollection<MyRect> Rectangles { get; set; }
         public static ObservableCollection<string> IpAddresses { get; set; }
 
+        public static Func<Server, bool> undoAction;
+        private static Server undoServer;
+
         static StaticClass()
         {
             Servers = new ObservableCollection<Server>();
@@ -30,14 +33,23 @@ namespace PZ3_NetworkService.Model
             LoadIps();
         }
 
-        public static void AddServerIfNotExist(Server server)
+        public static void Undo()
+        {
+            undoAction?.Invoke(undoServer);
+        }
+
+        public static bool AddServerIfNotExist(Server server)
         {
             if (!ServerExist(server))
             {
                 Servers.Add(server);
                 Rectangles.Add(new MyRect(server.Name));
                 ChangeMade(server.Id, Operation.ADD);
+                undoAction = DeleteServerIfExist;
+                undoServer = server;
+                return true;
             }
+            return false;
         }
 
         public static bool DeleteServerIfExist(Server server)
@@ -48,6 +60,8 @@ namespace PZ3_NetworkService.Model
                 Servers.RemoveAt(idx);
                 Rectangles.RemoveAt(idx);
                 ChangeMade(server.Id, Operation.REMOVE);
+                undoAction = AddServerIfNotExist;
+                undoServer = server;
                 return true;
             }
             return false;

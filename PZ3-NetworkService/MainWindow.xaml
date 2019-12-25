@@ -20,6 +20,10 @@
         <KeyBinding Key="F2" Command="{Binding ReportCommand}" />
         <KeyBinding Key="F3" Command="{Binding DataChartCommand}" />
         <KeyBinding Key="F4" Command="{Binding NetworkViewCommand}" />
+        <KeyBinding
+         Key="Z"
+         Command="{Binding UndoCommand}"
+         Modifiers="Ctrl" />
     </Window.InputBindings>
 
     <Window.Resources>
